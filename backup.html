@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citrin's Future You Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- CORE STYLES --- */
+        :root {
+            /* Sand & Aqua Palette: #f0f3e8 (Sand), #97d7d5 (Light Aqua), #00a4b3 (Teal), #007bff (Blue) */
+            --primary-color: #00a4b3; /* Teal (Main Accent) */
+            --secondary-color: #97d7d5; /* Light Aqua (Secondary Accent) */
+            --accent-color: #007bff; /* Bright Blue (Button Highlight) */
+            --bg-color: #343a40; /* Dark Background (From original image) */
+            --card-bg: #f0f3e8; /* Sand/Cream (Card Background) */
+            --text-color: #343a40; /* Dark Text */
+            --border-radius: 10px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 30px 15px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Darker shadow for contrast */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 2.8em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .card {
+            background-color: #ffffff; /* Use white for card inner background to pop off the cream background */
+            border: 1px solid var(--secondary-color);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: var(--border-radius);
+            transition: box-shadow 0.3s;
+        }
+
+        h2 {
+            color: var(--text-color);
+            font-size: 1.6em;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 164, 179, 0.25); /* Teal focus shadow */
+            outline: none;
+        }
+
+        /* Input Grouping for better spacing and borders */
+        .input-group {
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 5px;
+        }
+        .input-group:last-child {
+            border-bottom: none;
+        }
+        
+        /* Grid Layouts */
+        .cost-grid, .priority-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 20px;
+        }
+
+        .radio-group label, .checkbox-group label {
+            font-weight: 400;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            margin-top: 5px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .radio-group input[type="radio"]:checked + label,
+        .checkbox-group input[type="checkbox"]:checked + label {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .radio-group input, .checkbox-group input {
+            /* Hide the actual radio/checkbox button, use the label styling */
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+
+        /* Buttons */
+        button, .button-link {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: var(--accent-color); /* Bright Blue */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        button:hover, .button-link:hover {
+            background-color: #0056b3; /* Darker Blue */
+        }
+
+        #generate-button {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        /* Output Section */
+        .output-section {
+            background-color: var(--secondary-color); /* Light Aqua background */
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0, 164, 179, 0.2);
+        }
+
+        #gemini-prompt {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: #fff;
+            border: 1px solid #aaa;
+            padding: 20px;
+            resize: vertical;
+            min-height: 250px;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .output-actions button, .output-actions .button-link {
+            width: 50%;
+            padding: 12px;
+            font-size: 1em;
+            background-color: var(--primary-color); /* Teal for action buttons */
+            box-shadow: none;
+        }
+
+        .output-actions button:hover, .output-actions .button-link:hover {
+            background-color: #007a82; /* Darker Teal */
+        }
+
+        #copy-button {
+            background-color: #6c757d; /* Gray for Copy - less priority than Go */
+        }
+
+        #copy-button:hover {
+            background-color: #5a6268;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: var(--text-color);
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .note span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Citrin's Future You Tool</h1>
+        <p class="subtitle">Complete the survey based on your goals and preferences to generate an optimized prompt for an AI career counselor.</p>
+        
+        <section class="card" id="section-goals">
+            <h2><i class="fas fa-flag"></i> 1. Goals & Education Commitment</h2>
+            <div class="input-group">
+                <label for="goal-description">My primary goal for achieving independence is (Be Specific):</label>
+                <textarea id="goal-description" rows="3" placeholder="e.g., 'Move out within 6 months, buy a reliable car, and save $5,000 for a trade school down payment.'"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="desired-location">Target Location for Work and Living (e.g. City, State):</label>
+                <input type="text" id="desired-location" placeholder="e.g., Chicago, IL or Rural area near Tampa, Florida">
+            </div>
+            
+            <div class="input-group">
+                <label for="education-level">Maximum committed education/training level:</label>
+                <select id="education-level">
+                    <option value="High School Graduate">High School Diploma/GED (Zero additional training)</option>
+                    <option value="Certification/Trade School (6 months)">Certification/Trade School (6 months max)</option>
+                    <option value="Certification/Trade School (1 year)">Certification/Trade School (1 year max)</option>
+                    <option value="Associate's Degree (2 years)">Associate's Degree (2 years max)</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="card" id="section-costs">
+            <h2><i class="fas fa-dollar-sign"></i> 2. Estimated Monthly Costs ($)</h2>
+            <p>Estimate your minimum monthly expenses to live independently:</p>
+            <div class="cost-grid">
+                <div>
+                    <label for="cost-rent">Rent/Housing</label>
+                    <input type="number" id="cost-rent" value="800" min="0">
+                </div>
+                <div>
+                    <label for="cost-food">Food/Groceries</label>
+                    <input type="number" id="cost-food" value="400" min="0">
+                </div>
+                <div>
+                    <label for="cost-transport">Transportation (Car/Bus/Gas)</label>
+                    <input type="number" id="cost-transport" value="150" min="0">
+                </div>
+                <div>
+                    <label for="cost-insurance">Insurance (Health/Car/Renter's)</label>
+                    <input type="number" id="cost-insurance" value="200" min="0">
+                </div>
+                <div>
+                    <label for="cost-utilities">Utilities (Electric, Water, Trash)</label>
+                    <input type="number" id="cost-utilities" value="120" min="0">
+                </div>
+                <div>
+                    <label for="cost-phone">Phone/Internet/Subscriptions</label>
+                    <input type="number" id="cost-phone" value="80" min="0">
+                </div>
+                <div>
+                    <label for="cost-debt">Debt Payments (Car/Credit Cards)</label>
+                    <input type="number" id="cost-debt" value="0" min="0">
+                </div>
+                <div>
+                    <label for="cost-savings">Savings/Emergency Fund</label>
+                    <input type="number" id="cost-savings" value="100" min="0">
+                </div>
+            </div>
+            <p class="note">Total Estimated Expenses: $<span id="total-cost">0</span> (Required Annual Gross Income will be based on this total plus taxes.)</p>
+        </section>
+        
+        <section class="card" id="section-personality">
+            <h2><i class="fas fa-puzzle-piece"></i> 3. Personality & Work Style</h2>
+            
+            <div class="input-group">
+                <label>Social Style:</label>
+                <div class="radio-group">
+                    <input type="radio" name="social-style" id="style-extrovert" value="Extroverted (thrives in social, team environments)">
+                    <label for="style-extrovert">Extrovert/People-focused</label>
+                    <input type="radio" name="social-style" id="style-ambivert" value="Ambiverted (mix of independent and team work)">
+                    <label for="style-ambivert">Mix of both (Ambivert)</label>
+                    <input type="radio" name="social-style" id="style-introvert" value="Introverted (prefers independent, focused tasks)">
+                    <label for="style-introvert">Introvert/Independent work</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Work Pace/Environment:</label>
+                <div class="radio-group">
+                    <input type="radio" name="work-pace" id="pace-fast" value="Fast-paced, high-pressure, constantly changing environment">
+                    <label for="pace-fast">Fast-Paced/High-Pressure</label>
+                    <input type="radio" name="work-pace" id="pace-stable" value="Steady, predictable pace with clear routines">
+                    <label for="pace-stable">Steady/Predictable</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Physical & Location Preference (Select all that apply):</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="env-desk" value="Desk-based/Office setting">
+                    <label for="env-desk">Desk-based/Office</label>
+                    <input type="checkbox" id="env-outdoors" value="Outdoor/Field work preference">
+                    <label for="env-outdoors">Outdoor/Field work</label>
+                    <input type="checkbox" id="env-physical" value="Physically demanding/manual labor">
+                    <label for="env-physical">Physically demanding</label>
+                    <input type="checkbox" id="env-travel" value="Open to frequent travel">
+                    <label for="env-travel">Frequent travel</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Specific Skills/Aptitudes (Select all that apply):</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="skill-tech" value="High technical/mechanical aptitude">
+                    <label for="skill-tech">Technical/Mechanical</label>
+                    <input type="checkbox" id="skill-detail" value="Strong attention to detail and organized">
+                    <label for="skill-detail">Detail-focused/Organized</label>
+                    <input type="checkbox" id="skill-creative" value="Creative/Artistic interests">
+                    <label for="skill-creative">Creative/Artistic</label>
+                    <input type="checkbox" id="skill-math" value="Strong math and analytical skills">
+                    <label for="skill-math">Math/Analytical</label>
+                    <input type="checkbox" id="skill-lead" value="Strong leadership and decision-making skills">
+                    <label for="skill-lead">Leadership/Decision-making</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="personal-traits">Describe any personal traits, values, or interests that a job MUST align with:</label>
+                <textarea id="personal-traits" rows="2" placeholder="e.g., 'A strong sense of morality is essential, I enjoy helping the elderly, I love fixing electronics.'"></textarea>
+            </div>
+        </section>
+        
+        <section class="card" id="section-priorities">
+            <h2><i class="fas fa-chart-bar"></i> 4. Priorities & Values</h2>
+
+            <div class="input-group">
+                <label for="other-info">Any other critical constraints or non-negotiables (e.g., must work nights, cannot lift heavy objects, religious constraints):</label>
+                <textarea id="other-info" rows="2" placeholder="e.g., 'I am only available to work evening and night shifts.', 'I cannot work weekends.'"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Most Important Factor in a Job (Top Priority):</label>
+                <div class="radio-group">
+                    <input type="radio" name="job-priority" id="jp-salary" value="Highest possible salary and benefits">
+                    <label for="jp-salary">High Salary/Benefits</label>
+                    <input type="radio" name="job-priority" id="jp-balance" value="Excellent work-life balance and flexibility">
+                    <label for="jp-balance">Work-Life Balance</label>
+                    <input type="radio" name="job-priority" id="jp-growth" value="Opportunity for career growth and learning">
+                    <label for="jp-growth">Growth/Learning Potential</label>
+                    <input type="radio" name="job-priority" id="jp-fulfillment" value="Personal fulfillment and impact">
+                    <label for="jp-fulfillment">Fulfillment/Impact</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Risk Tolerance (Career Change/Job Security):</label>
+                <div class="radio-group">
+                    <input type="radio" name="risk-tolerance" id="risk-low" value="Low tolerance; needs high job security and predictability">
+                    <label for="risk-low">Low Risk (High Security)</label>
+                    <input type="radio" name="risk-med" id="risk-med" value="Medium tolerance; willing to take chances for greater reward">
+                    <label for="risk-med">Medium Risk (Growth-focused)</label>
+                    <input type="radio" name="risk-high" id="risk-high" value="High tolerance; values adventure and new ventures over security">
+                    <label for="risk-high">High Risk (Adventure-focused)</label>
+                </div>
+            </div>
+        </section>
+        
+        <button id="generate-button">✨ Generate Optimized Gemini Prompt ✨</button>
+
+        <section class="card output-section hidden" id="output-area">
+            <h2>✅ Your Gemini Prompt is Ready!</h2>
+            <p>Copy the text below, then click the link to get your personalized career paths.</p>
+            <textarea id="gemini-prompt" rows="25" readonly></textarea>
+            <div class="output-actions">
+                <button id="copy-button">Copy Prompt to Clipboard</button>
+                <a id="gemini-link" href="https://gemini.google.com/app" target="_blank" class="button-link">Go to Gemini to Paste</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateButton = document.getElementById('generate-button');
+            const copyButton = document.getElementById('copy-button');
+            const outputArea = document.getElementById('output-area');
+            const geminiPrompt = document.getElementById('gemini-prompt');
+            const totalCostSpan = document.getElementById('total-cost');
+            const costInputs = document.querySelectorAll('#section-costs input[type="number"]');
+
+            // --- 1. Real-time Total Cost Update ---
+            function updateCosts() {
+                let total = 0;
+                costInputs.forEach(input => {
+                    total += parseFloat(input.value) || 0; 
+                });
+                totalCostSpan.textContent = total.toLocaleString(); 
+            }
+
+            costInputs.forEach(input => {
+                input.addEventListener('input', updateCosts);
+            });
+            updateCosts(); // Run once on load for default values
+
+            // --- 2. Generate Prompt Logic ---
+            generateButton.addEventListener('click', () => {
+                // A. Capture all inputs (COMPREHENSIVE)
+                const goalDescription = document.getElementById('goal-description').value.trim() || 'Achieve financial independence.';
+                const desiredLocation = document.getElementById('desired-location').value.trim() || 'Unspecified location in the United States.';
+                const educationLevel = document.getElementById('education-level').value;
+
+                // Costs
+                const costs = {
+                    rent: parseFloat(document.getElementById('cost-rent').value) || 0,
+                    food: parseFloat(document.getElementById('cost-food').value) || 0,
+                    transport: parseFloat(document.getElementById('cost-transport').value) || 0,
+                    insurance: parseFloat(document.getElementById('cost-insurance').value) || 0,
+                    utilities: parseFloat(document.getElementById('cost-utilities').value) || 0,
+                    phone: parseFloat(document.getElementById('cost-phone').value) || 0,
+                    debt: parseFloat(document.getElementById('cost-debt').value) || 0,
+                    savings: parseFloat(document.getElementById('cost-savings').value) || 0,
+                };
+                
+                const totalMonthlyExpenses = Object.values(costs).reduce((sum, current) => sum + current, 0);
+                // Required Gross Income: Total Expenses / 0.75 (assumes ~25% tax/benefits rate for estimation)
+                const requiredMonthlyGrossIncome = Math.ceil(totalMonthlyExpenses / 0.75); 
+                const requiredAnnualIncome = (requiredMonthlyGrossIncome * 12).toLocaleString();
+                
+                // Personality
+                const socialStyle = document.querySelector('input[name="social-style"]:checked')?.value || 'No specific social style preference.';
+                const workPace = document.querySelector('input[name="work-pace"]:checked')?.value || 'No specific work pace preference.';
+                
+                const environments = Array.from(document.querySelectorAll('#section-personality .input-group:nth-child(3) input[type="checkbox"]:checked'))
+                                                     .map(cb => cb.value)
+                                                     .join(', ') || 'General/Indoor setting.';
+
+                const keySkills = Array.from(document.querySelectorAll('#section-personality .input-group:nth-child(4) input[type="checkbox"]:checked'))
+                                           .map(cb => cb.value)
+                                           .join(', ') || 'No specific skills highlighted.';
+
+                const personalTraits = document.getElementById('personal-traits').value.trim() || 'No additional personal traits or interests specified.';
+
+                // Priorities & Values
+                const otherInfo = document.getElementById('other-info').value.trim() || 'None.';
+                const jobPriority = document.querySelector('input[name="job-priority"]:checked')?.value || 'Balanced career opportunity.';
+                const riskTolerance = document.querySelector('input[name="risk-tolerance"]:checked')?.value || 'Medium risk tolerance.';
+                
+
+                // B. Construct the Structured Prompt (Updated for FULL Detail)
+                const prompt = `
+Act as a professional career counselor for a recent high school graduate. Analyze the detailed profile below and suggest three specific, realistic career paths or roles.
+
+---
+### 1. Goal and Financial Summary
+
+* **Primary Independence Goal:** ${goalDescription}
+* **Max Training Commitment:** ${educationLevel}
+* **Target Location:** ${desiredLocation}
+* **CRITICAL REQUIREMENT: Required Annual Gross Income:** $${requiredAnnualIncome} (This is based on monthly expenses of $${totalMonthlyExpenses.toLocaleString()} plus a buffer for taxes and necessary savings/spending.)
+
+---
+### 2. Personality & Work Style Profile
+
+* **Social Style:** ${socialStyle}
+* **Work Pace:** ${workPace}
+* **Physical/Location Preferences:** ${environments}
+* **Key Skills/Aptitudes:** ${keySkills}
+* **Personal Traits/Interests:** ${personalTraits}
+
+---
+### 3. Priorities & Constraints
+
+* **Most Important Job Value:** ${jobPriority}
+* **Risk Tolerance (Job Security/Change):** ${riskTolerance}
+* **Other Constraints/Non-negotiables:** ${otherInfo}
+
+---
+### 4. Required Output Format
+
+For each of the three career suggestions, the response MUST use the following format:
+
+**[CAREER TITLE]**
+-   **Annual Income Estimate:** [A range demonstrating the income requirement is met for the specified location.]
+-   **Training Path:** [Required certification/degree, and time commitment (must match ${educationLevel}).]
+-   **Fit Justification:** [A brief explanation connecting the career to all of the user's specific priorities, personality keywords, and the required income.]
+    `.trim(); 
+
+                // C. Display the Prompt
+                geminiPrompt.value = prompt;
+                outputArea.classList.remove('hidden');
+                outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            // --- 3. Copy to Clipboard Functionality ---
+            copyButton.addEventListener('click', () => {
+                const feedback = () => {
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = '✅ Copied!';
+                    copyButton.style.backgroundColor = '#4CAF50';
+                    setTimeout(() => {
+                        copyButton.textContent = originalText;
+                        copyButton.style.backgroundColor = '#6c757d'; // Reset to gray
+                    }, 1500);
+                }
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(geminiPrompt.value).then(feedback).catch(() => {
+                        // Fallback
+                        geminiPrompt.select();
+                        document.execCommand('copy');
+                        feedback();
+                    });
+                } else {
+                    // Fallback for older browsers
+                    geminiPrompt.select();
+                    document.execCommand('copy');
+                    feedback();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
