@@ -98,10 +98,11 @@
 
         label {
             display: block;
-            margin-top: 15px;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-weight: 500; /* was 600 */
             font-size: 0.95em;
+            color: #334155;
         }
 
         input[type="text"],
@@ -219,6 +220,19 @@
             font-weight: 700;
             color: var(--primary-color);
         }
+        
+        #section-priorities .input-group {
+            padding: 22px 0;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        #section-priorities .radio-group {
+            margin-top: 12px;
+        }
+        #section-priorities input[type="text"] {
+            background-color: #F8FAFC;
+        }
     </style>
 </head>
 <body>
@@ -258,11 +272,11 @@
             <div class="cost-grid">
                 <div>
                     <label for="cost-rent">Rent/Housing</label>
-                    <input type="number" id="cost-rent" value="1300" min="0">
+                    <input type="number" id="cost-rent" value="1900" min="0">
                 </div>
                 <div>
                     <label for="cost-food">Food/Groceries</label>
-                    <input type="number" id="cost-food" value="500" min="0">
+                    <input type="number" id="cost-food" value="600" min="0">
                 </div>
                 <div>
                     <label for="cost-transport">Transportation</label>
@@ -270,15 +284,15 @@
                 </div>
                 <div>
                     <label for="cost-insurance">Insurance</label>
-                    <input type="number" id="cost-insurance" value="200" min="0">
+                    <input type="number" id="cost-insurance" value="300" min="0">
                 </div>
                 <div>
                     <label for="cost-utilities">Utilities</label>
-                    <input type="number" id="cost-utilities" value="150" min="0">
+                    <input type="number" id="cost-utilities" value="200" min="0">
                 </div>
                 <div>
                     <label for="cost-phone">Phone/Internet</label>
-                    <input type="number" id="cost-phone" value="100" min="0">
+                    <input type="number" id="cost-phone" value="150" min="0">
                 </div>
                 <div>
                     <label for="cost-debt">Payments (Car/Credit Cards)</label>
